@@ -13,11 +13,15 @@ import java.net.URL;
  */
 public class Resources {
 
-    public static BufferedImage welcome, iconimage;
+    public static BufferedImage welcome, iconimage, line;
+    public static AudioClip hit, bounce;
 
     public static void load() {
         welcome = loadImage("welcome.png");
         iconimage = loadImage("iconimage.png");
+        line = loadImage("line.png");
+        hit = loadSound("hit.wav");
+        bounce = loadSound("bounce.wav");
     }
 
     private static AudioClip loadSound(String filename) {
