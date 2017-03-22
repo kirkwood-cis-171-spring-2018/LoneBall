@@ -1,5 +1,7 @@
 package com.jamescho.game.model;
 
+import com.jamescho.game.main.GameMain;
+
 import java.awt.*;
 
 /**
@@ -21,6 +23,11 @@ public class Paddle {
 
     public void update() {
         y += velY;
+        if (y < 0) {
+            y = 0;
+        } else if (y + height > GameMain.GAME_HEIGHT) {
+            y = GameMain.GAME_HEIGHT - height;
+        }
         updateRect();
     }
 
