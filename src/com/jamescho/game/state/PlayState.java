@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import static java.lang.System.out;
+
 /**
  * Created by cortman on 3/21/17.
  */
@@ -25,7 +27,8 @@ public class PlayState extends State {
 
     @Override
     public void update() {
-
+        paddleLeft.update();
+        paddleRight.update();
     }
 
     @Override
@@ -54,11 +57,21 @@ public class PlayState extends State {
 
     @Override
     public void onKeyPress(KeyEvent e) {
-
+        out.println("Key Press event");
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            paddleLeft.accelUp();
+            paddleRight.accelDown();
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            paddleLeft.accelDown();
+            paddleRight.accelUp();
+        }
     }
 
     @Override
     public void onKeyRelease(KeyEvent e) {
-
+        if ( e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+            paddleLeft.stop();
+            paddleRight.stop();
+        }
     }
 }
