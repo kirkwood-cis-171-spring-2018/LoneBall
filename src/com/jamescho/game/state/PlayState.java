@@ -2,6 +2,7 @@ package com.jamescho.game.state;
 
 import com.jamescho.game.main.GameMain;
 import com.jamescho.game.main.Resources;
+import com.jamescho.game.model.Ball;
 import com.jamescho.game.model.Paddle;
 
 import java.awt.*;
@@ -15,9 +16,13 @@ import static java.lang.System.out;
  */
 public class PlayState extends State {
 
+    private Paddle paddleLeft, paddleRight;
     private static final int PADDLE_WIDTH = 15;
     private static final int PADDLE_HEIGHT = 60;
-    private Paddle paddleLeft, paddleRight;
+
+    private Ball ball;
+    private static final int BALL_DIAMETER = 20;
+
     private int playerScore = 0;
     private Font scoreFont;
 
@@ -26,12 +31,31 @@ public class PlayState extends State {
         paddleLeft = new Paddle(0,195,PADDLE_WIDTH, PADDLE_HEIGHT);
         paddleRight = new Paddle(785,195,PADDLE_WIDTH, PADDLE_HEIGHT);
         scoreFont = new Font("SansSerif", Font.BOLD, 25);
+        ball = new Ball(300,200, BALL_DIAMETER, BALL_DIAMETER);
     }
 
     @Override
     public void update() {
         paddleLeft.update();
         paddleRight.update();
+        ball.update();
+
+        if (ballCollides(paddleLeft)) {
+            playerScore++;
+            ball.onCollideWith(paddleLeft);
+            Resources.hit.play();
+        } else if (ballCollides(paddleRight)) {
+            playerScore++;
+            ball.onCollideWith(paddleRight);
+            Resources.hit.play();
+        } else if (ball.isDead()) {
+            playerScore -= 3;
+            ball.reset();
+        }
+    }
+
+    private boolean ballCollides(Paddle p) {
+        return ball.getRect().intersects(p.getRect());
     }
 
     @Override
@@ -49,6 +73,9 @@ public class PlayState extends State {
         g.setColor(Color.white);
         g.fillRect(paddleLeft.getX(), paddleLeft.getY(), paddleLeft.getWidth(), paddleLeft.getHeight());
         g.fillRect(paddleRight.getX(), paddleRight.getY(), paddleRight.getWidth(), paddleRight.getHeight());
+
+        //Draw Ball
+        g.drawRect(ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight());
 
         //Draw UI
         g.setFont(scoreFont);
