@@ -15,14 +15,17 @@ import static java.lang.System.out;
  */
 public class PlayState extends State {
 
-    private Paddle paddleLeft, paddleRight;
     private static final int PADDLE_WIDTH = 15;
     private static final int PADDLE_HEIGHT = 60;
+    private Paddle paddleLeft, paddleRight;
+    private int playerScore = 0;
+    private Font scoreFont;
 
     @Override
     public void init() {
         paddleLeft = new Paddle(0,195,PADDLE_WIDTH, PADDLE_HEIGHT);
         paddleRight = new Paddle(785,195,PADDLE_WIDTH, PADDLE_HEIGHT);
+        scoreFont = new Font("SansSerif", Font.BOLD, 25);
     }
 
     @Override
@@ -42,12 +45,14 @@ public class PlayState extends State {
         //line
         g.drawImage(Resources.line, (GameMain.GAME_WIDTH / 2) - 2, 0, null);
 
-        //render
+        //Draw Paddles
         g.setColor(Color.white);
         g.fillRect(paddleLeft.getX(), paddleLeft.getY(), paddleLeft.getWidth(), paddleLeft.getHeight());
         g.fillRect(paddleRight.getX(), paddleRight.getY(), paddleRight.getWidth(), paddleRight.getHeight());
 
-
+        //Draw UI
+        g.setFont(scoreFont);
+        g.drawString("" + playerScore, 350, 40);
     }
 
     @Override
