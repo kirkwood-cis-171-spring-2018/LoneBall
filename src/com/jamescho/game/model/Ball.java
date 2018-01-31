@@ -11,6 +11,7 @@ import java.util.Random;
  * Created by cortman on 3/26/17.
  */
 public class Ball {
+    public static final int BALL_SPEED = 15;
     private int x, y, width, height, velX, velY;
     private Rectangle rect;
 
@@ -19,8 +20,8 @@ public class Ball {
         this.y = y;
         this.width = width;
         this.height = height;
-        velX = 5;
-        velY = RandomNumberGenerator.getRandIntBetween(-4,5);
+        velX = BALL_SPEED;
+        velY = RandomNumberGenerator.getRandIntBetween(-4, 5);
         rect = new Rectangle(x,y,width,height);
     }
 
@@ -65,8 +66,8 @@ public class Ball {
     public void reset() {
         x = 300;
         y = 200;
-        velX = 5;
-        velY = RandomNumberGenerator.getRandIntBetween(-4,5);
+        velX = BALL_SPEED;
+        velY = RandomNumberGenerator.getRandIntBetween(-4, 5);
     }
 
     public int getX() {
