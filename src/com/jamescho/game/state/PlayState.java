@@ -15,6 +15,7 @@ public class PlayState extends State {
     private int yPos = GameMain.GAME_HEIGHT / 2;
     private int xPos2 = GameMain.GAME_WIDTH - 5;
     private int yPos2 = GameMain.GAME_HEIGHT / 2;
+    private int paddleHeight = 50;
     private int endPositionX = 0;
     private int endPositionY = 0;
     private boolean moveRight = true;
@@ -28,8 +29,31 @@ public class PlayState extends State {
 
     @Override
     public void update() {
-        yPos += yVelocity;
-        yPos2 -= yVelocity;
+
+        //calculate next position
+        //if next position is at top then don't change
+        //else if next position is at the bottom then don't change
+        //else change
+        int nextPosition = yPos + yVelocity;
+        if (nextPosition <= 0) {
+            //no change
+        } else if(nextPosition >= (GameMain.GAME_HEIGHT - paddleHeight)) {
+           //no change
+        } else {
+            //change
+            yPos = nextPosition;
+        }
+        nextPosition = yPos2 - yVelocity;
+
+        if (nextPosition <= 0) {
+            //no change
+        } else if(nextPosition >= (GameMain.GAME_HEIGHT - paddleHeight)) {
+            //no change
+        } else {
+            //change
+            yPos2 = nextPosition;
+        }
+
     }
 
     @Override
@@ -43,12 +67,15 @@ public class PlayState extends State {
         //line
         g.drawImage(Resources.line, (GameMain.GAME_WIDTH / 2) - 2, 0, null);
 
-
+        //left
         g.setColor(Color.white);
-        g.fillRect(xPos,yPos,5,50);
+        g.fillRect(xPos,yPos,5,paddleHeight);
 
+        //right
         g.setColor(Color.ORANGE);
-        g.fillRect(xPos2,yPos2,5,50);
+        g.fillRect(xPos2,yPos2,5,paddleHeight);
+
+        g.drawString(new Integer(yPos2).toString(), (GameMain.GAME_WIDTH/2) + 25, GameMain.GAME_HEIGHT/2);
     }
 
     @Override
@@ -74,7 +101,7 @@ public class PlayState extends State {
         }//end of useless info
         if (pressedKey == 'w') {
             yVelocity = -5;
-        } if (pressedKey == 's') {
+        } else if (pressedKey == 's') {
             yVelocity = 5;
         }
     }
