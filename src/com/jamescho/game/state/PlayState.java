@@ -15,10 +15,12 @@ public class PlayState extends State {
     private int yPos = GameMain.GAME_HEIGHT / 2;
     private int xPos2 = GameMain.GAME_WIDTH - 5;
     private int yPos2 = GameMain.GAME_HEIGHT / 2;
+    private int paddleHeight = 50;
     private int endPositionX = 0;
     private int endPositionY = 0;
     private boolean moveRight = true;
     private int yVelocity;
+
 
 
     @Override
@@ -28,8 +30,26 @@ public class PlayState extends State {
 
     @Override
     public void update() {
-        yPos += yVelocity;
-        yPos2 -= yVelocity;
+        int nextPosLeft = yPos + yVelocity;
+        int nextPosRight = yPos2 - yVelocity;
+
+
+        if(inBounds(nextPosLeft)){
+            yPos = nextPosLeft;
+        }
+        if(inBounds(nextPosRight)){
+            yPos2 = nextPosRight;
+        }
+    }
+
+    private boolean inBounds(int nextPos) {
+        boolean atTop = nextPos <=0;
+        boolean atBottom = nextPos >= (GameMain.GAME_HEIGHT - paddleHeight);
+        if (!(atTop || atBottom)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -43,12 +63,13 @@ public class PlayState extends State {
         //line
         g.drawImage(Resources.line, (GameMain.GAME_WIDTH / 2) - 2, 0, null);
 
-
+        //left
         g.setColor(Color.white);
-        g.fillRect(xPos,yPos,5,50);
-
+        g.fillRect(xPos,yPos,5,paddleHeight);
+        //right
         g.setColor(Color.ORANGE);
-        g.fillRect(xPos2,yPos2,5,50);
+        g.fillRect(xPos2,yPos2,5,paddleHeight);
+        g.drawString(new Integer(yPos).toString(),(GameMain.GAME_WIDTH/2) + 25,(GameMain.GAME_HEIGHT/2));
     }
 
     @Override
@@ -74,9 +95,10 @@ public class PlayState extends State {
         }//end of useless info
         if (pressedKey == 'w') {
             yVelocity = -5;
-        } if (pressedKey == 's') {
+        } else if (pressedKey == 's') {
             yVelocity = 5;
         }
+
     }
 
     @Override
@@ -85,3 +107,4 @@ public class PlayState extends State {
         yVelocity = 0;
     }
 }
+///Users/jacobsteinman/Desktop/programmingShit/java/Files/programmingClass
