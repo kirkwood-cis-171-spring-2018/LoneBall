@@ -30,29 +30,22 @@ public class PlayState extends State {
     @Override
     public void update() {
 
-        //calculate next position
-        //if next position is at top then don't change
-        //else if next position is at the bottom then don't change
-        //else change
-        int nextPosition = yPos + yVelocity;
-        if (nextPosition <= 0) {
-            //no change
-        } else if(nextPosition >= (GameMain.GAME_HEIGHT - paddleHeight)) {
-           //no change
-        } else {
-            //change
-            yPos = nextPosition;
-        }
-        nextPosition = yPos2 - yVelocity;
+        int nextPositionLeft = yPos + yVelocity;
+        int nextPositionRight = yPos2 - yVelocity;
 
-        if (nextPosition <= 0) {
-            //no change
-        } else if(nextPosition >= (GameMain.GAME_HEIGHT - paddleHeight)) {
-            //no change
-        } else {
-            //change
-            yPos2 = nextPosition;
+        if( inBounds(nextPositionLeft)) {
+            yPos = nextPositionLeft;
         }
+
+        if (inBounds(nextPositionRight)) {
+            yPos2 = nextPositionRight;
+        }
+    }
+
+    private boolean inBounds(int nextPosition) {
+        boolean atTop = nextPosition <= 0;
+        boolean atBottom = nextPosition >= (GameMain.GAME_HEIGHT - paddleHeight);
+        return !(atTop || atBottom);
 
     }
 
