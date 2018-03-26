@@ -11,15 +11,23 @@ import java.awt.event.MouseEvent;
  * Created by cortman on 3/21/17.
  */
 public class PlayState extends State {
+    private final int BALL_SIZE = 30;
+    private final int PADDLE_WIDTH = 5;
+    private final int PADDLE_HEIGHT = 50;
+
     private int xPosition = 0;
     private int yPosition = GameMain.GAME_HEIGHT / 2;
+
     private int xPosition2 = GameMain.GAME_WIDTH - 5;
     private int yPosition2 = GameMain.GAME_HEIGHT / 2;
-    private int endPositionX = 0;
-    private int endPositionY = 0;
-    private boolean moveRight = true;
+
     private int yVelocity;
-    private int paddleHeight = 50;
+
+    private int ballXPosition = GameMain.GAME_WIDTH/2;
+    private int ballYPosition = GameMain.GAME_HEIGHT / 2;
+
+    private int ballXVelocity = 5;
+    private int ballYVelocity = 0;
 
 
     @Override
@@ -41,11 +49,31 @@ public class PlayState extends State {
             yPosition2 = nextPositionRight;
         }
 
+        ballXPosition += ballXVelocity;
+        ballYPosition += ballYVelocity;
+
+        Rectangle ballRectangle = new Rectangle(ballXPosition, ballYPosition, BALL_SIZE, BALL_SIZE);
+
+        Rectangle paddleLeftRectangle = new Rectangle(xPosition, yPosition,PADDLE_WIDTH , PADDLE_HEIGHT);
+        Rectangle paddleRightRectangle = new Rectangle(xPosition2, yPosition2, PADDLE_WIDTH, PADDLE_HEIGHT);
+
+        if (ballRectangle.intersects(paddleLeftRectangle)) {
+            // hit left paddle
+        } else if (ballRectangle.intersects(paddleRightRectangle)) {
+            ballXVelocity = -5;
+            ballYVelocity = 5;
+
+            ballXPosition += ballXVelocity;
+            ballYPosition += ballYVelocity;
+
+        } else {
+            //hit a wall?
+        }
     }
 
     private boolean inBounds(int nextPosition) {
         boolean atTop = nextPosition <= 0;
-        boolean atBottom = nextPosition >= (GameMain.GAME_HEIGHT - paddleHeight);
+        boolean atBottom = nextPosition >= (GameMain.GAME_HEIGHT - PADDLE_HEIGHT);
         return !(atTop || atBottom);
     }
 
@@ -62,13 +90,18 @@ public class PlayState extends State {
 
         //left
         g.setColor(Color.white);
-        g.fillRect(xPosition,yPosition,5,paddleHeight);
+        g.fillRect(xPosition, yPosition, PADDLE_WIDTH, PADDLE_HEIGHT);
         g.drawString(new Integer(yPosition).toString(), GameMain.GAME_WIDTH/2 - 45,GameMain.GAME_HEIGHT/2);
 
         //right
         g.setColor(Color.white);
-        g.fillRect(xPosition2,yPosition2,10,paddleHeight);
+        g.fillRect(xPosition2, yPosition2, PADDLE_WIDTH, PADDLE_HEIGHT);
         g.drawString(new Integer(yPosition2).toString(), GameMain.GAME_WIDTH/2 + 25,GameMain.GAME_HEIGHT/2);
+
+        //ball
+        g.fillRect(ballXPosition, ballYPosition, BALL_SIZE,BALL_SIZE);
+
+        //g.drawString(new Integer(yPosition2).toString(), (GameMain.GAME_WIDTH/2) + 25, GameMain.GAME_HEIGHT);
     }
 
     @Override
