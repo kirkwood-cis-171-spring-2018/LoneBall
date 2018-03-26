@@ -15,6 +15,7 @@ public class PlayState extends State {
     private int yPos = GameMain.GAME_HEIGHT / 2;
     private int xPos2 = GameMain.GAME_WIDTH - 5;
     private int yPos2 = GameMain.GAME_HEIGHT / 2;
+    private int paddleHeight = 50;
     private int endPositionX = 0;
     private int endPositionY = 0;
     private boolean moveRight = true;
@@ -28,8 +29,24 @@ public class PlayState extends State {
 
     @Override
     public void update() {
-        yPos += yVelocity;
-        yPos2 -= yVelocity;
+
+        int nextPositionLeft = yPos + yVelocity;
+        int nextPositionRight = yPos2 - yVelocity;
+
+        if( inBounds(nextPositionLeft)) {
+            yPos = nextPositionLeft;
+        }
+
+        if (inBounds(nextPositionRight)) {
+            yPos2 = nextPositionRight;
+        }
+    }
+
+    private boolean inBounds(int nextPosition) {
+        boolean atTop = nextPosition <= 0;
+        boolean atBottom = nextPosition >= (GameMain.GAME_HEIGHT - paddleHeight);
+        return !(atTop || atBottom);
+
     }
 
     @Override
@@ -43,12 +60,15 @@ public class PlayState extends State {
         //line
         g.drawImage(Resources.line, (GameMain.GAME_WIDTH / 2) - 2, 0, null);
 
-
+        //left
         g.setColor(Color.white);
-        g.fillRect(xPos,yPos,5,50);
+        g.fillRect(xPos,yPos,5,paddleHeight);
 
+        //right
         g.setColor(Color.ORANGE);
-        g.fillRect(xPos2,yPos2,5,50);
+        g.fillRect(xPos2,yPos2,5,paddleHeight);
+
+        g.drawString(new Integer(yPos2).toString(), (GameMain.GAME_WIDTH/2) + 25, GameMain.GAME_HEIGHT/2);
     }
 
     @Override
@@ -74,7 +94,7 @@ public class PlayState extends State {
         }//end of useless info
         if (pressedKey == 'w') {
             yVelocity = -5;
-        } if (pressedKey == 's') {
+        } else if (pressedKey == 's') {
             yVelocity = 5;
         }
     }
