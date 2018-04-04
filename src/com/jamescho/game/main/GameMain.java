@@ -8,7 +8,7 @@ import java.awt.*;
  */
 public class GameMain {
     private static final String GAME_TITLE = "Java Game Development Framework";
-    public static final int GAME_WIDTH= 800;
+    public static int GAME_WIDTH= 800;
     public static final int GAME_HEIGHT = 450;
     public static Game sGame;
 
