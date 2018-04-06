@@ -2,6 +2,7 @@ package com.jamescho.game.state;
 
 import com.jamescho.game.main.GameMain;
 import com.jamescho.game.main.Resources;
+import com.jamescho.game.model.Ball;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -24,17 +25,25 @@ public class PlayState extends State {
 
     private int yVelocity;
 
+    /*
     private int ballXPosition = GameMain.GAME_WIDTH/2;
     private int ballYPosition = GameMain.GAME_HEIGHT / 2;
 
     private int ballXVelocity = 5;
     private int ballYVelocity = 0;
-    private int playerScore = 0;
+    */
 
+    private Ball ball;
+
+    private int playerScore = 0;
 
     @Override
     public void init() {
-
+        ball = new Ball(
+                GameMain.GAME_WIDTH/2,
+                GameMain.GAME_HEIGHT/2,
+                BALL_SIZE
+        );
     }
 
     @Override
@@ -51,35 +60,23 @@ public class PlayState extends State {
             yPosition2 = nextPositionRight;
         }
 
-        updateBallPosition();
+        ball.update();
 
-        Rectangle ballRectangle = new Rectangle(ballXPosition, ballYPosition, BALL_SIZE, BALL_SIZE);
-        Rectangle paddleLeftRectangle = new Rectangle(xPosition, yPosition,PADDLE_WIDTH , PADDLE_HEIGHT);
-        Rectangle paddleRightRectangle = new Rectangle(xPosition2, yPosition2, PADDLE_WIDTH, PADDLE_HEIGHT);
+        Rectangle paddleLeftRectangle =
+                new Rectangle(xPosition, yPosition,PADDLE_WIDTH , PADDLE_HEIGHT);
+        Rectangle paddleRightRectangle =
+                new Rectangle(xPosition2, yPosition2, PADDLE_WIDTH, PADDLE_HEIGHT);
 
-        if (ballRectangle.intersects(paddleLeftRectangle)) {
+        if (ball.collidesWith(paddleLeftRectangle)) {
             playerScore += 1;
-            ballXVelocity = 5;
-            generateRandomYVelocityOfBall();
-            updateBallPosition();
-
-        } else if (ballRectangle.intersects(paddleRightRectangle)) {
-            playerScore += 1;
-            ballXVelocity = -5;
-            generateRandomYVelocityOfBall();
-            updateBallPosition();
+            ball.onPaddleCollision();
             Resources.hit.play();
+        } else if (ball.collidesWith(paddleRightRectangle)) {
+            playerScore += 1;
+            ball.onPaddleCollision();
+            Resources.hit.play();
+        } else if (ball.atLeftOrRight(this)) {
 
-        } else if (atTopOrBottom(ballYPosition, BALL_SIZE)) {
-            ballYVelocity = ballYVelocity * -1;
-            Resources.bounce.play();
-
-        } else if (atLeftOrRight(ballXPosition, BALL_SIZE)) {
-            playerScore -= 3;
-            ballXPosition = GameMain.GAME_WIDTH / 2;
-            ballYPosition = GameMain.GAME_HEIGHT / 2;
-            ballYVelocity = 0;
-            ballXVelocity = 5;
         }
     }
 
@@ -93,22 +90,6 @@ public class PlayState extends State {
         boolean atTop = nextYPosition <= 0;
         boolean atBottom = nextYPosition >= (GameMain.GAME_HEIGHT - height);
         return atTop || atBottom;
-    }
-
-    private void updateBallPosition() {
-        ballXPosition += ballXVelocity;
-        ballYPosition += ballYVelocity;
-    }
-
-    private void generateRandomYVelocityOfBall() {
-        Random rnd = new Random();
-        final int UPPER = 5;
-        final int LOWER = -4;
-
-        int randomBound = UPPER - LOWER + 1;
-        int randomYVelocityNumber = rnd.nextInt(randomBound);
-        ballYVelocity = randomYVelocityNumber - 4;
-
     }
 
     @Override
@@ -133,9 +114,9 @@ public class PlayState extends State {
         g.drawString(new Integer(playerScore).toString(), GameMain.GAME_WIDTH/2 + 25,GameMain.GAME_HEIGHT/2);
 
         //ball
-        g.fillRect(ballXPosition, ballYPosition, BALL_SIZE,BALL_SIZE);
+        g.fillRect(ball.getxPosition(), ball.getyPosition(), BALL_SIZE,BALL_SIZE);
 
-        //g.drawString(new Integer(yPosition2).toString(), (GameMain.GAME_WIDTH/2) + 25, GameMain.GAME_HEIGHT);
+        g.drawString(new Integer(yPosition2).toString(), (GameMain.GAME_WIDTH/2) + 25, GameMain.GAME_HEIGHT);
     }
 
     @Override
@@ -163,7 +144,10 @@ public class PlayState extends State {
 
     @Override
     public void onKeyRelease(KeyEvent e) {
-
         yVelocity = 0;
+    }
+
+    public void addScore(int points) {
+        this.playerScore += points;
     }
 }
