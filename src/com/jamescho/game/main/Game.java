@@ -31,12 +31,6 @@ public class Game extends JPanel implements Runnable {
         requestFocus();
     }
 
-    public void setCurrentState(State newState) {
-        System.gc();
-        currentState = newState;
-        newState.init();
-        inputHandler.setCurrentState(currentState);
-    }
 
     @Override
     public void addNotify() {
@@ -60,6 +54,13 @@ public class Game extends JPanel implements Runnable {
         running = true;
         gameThread = new Thread(this, "Game Thread");
         gameThread.start();
+    }
+
+    public void setCurrentState(State newState) {
+        System.gc();
+        newState.init();
+        currentState = newState;
+        inputHandler.setCurrentState(currentState);
     }
 
     @Override
